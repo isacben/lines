@@ -3,7 +3,7 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=20
+	spd=10
 	vel=8
 	piece_x=48 --center of 96
 	piece_y=0
@@ -64,16 +64,16 @@ end
 -- move & collisions
 
 function down()
+	if on_floor() then
+		spawn("tee")
+	end
+	
 	if t%spd == 0 then
 		current_pce.y+=vel
 		
 		for square in all(pce_squares) do
 			square.y+=vel
 		end
-	end
-	
-	if on_floor() then
-		spawn("block")
 	end
 end
 
@@ -87,6 +87,16 @@ function move()
 			move=0
 		end
 		
+		for cs in all(pce_squares) do
+			for s in all(squares) do
+				if cs.y==s.y then
+					if cs.x == s.x+8 then 
+						move=0
+					end
+				end
+			end
+		end
+		
 		current_pce.x-=move
 		for s in all(pce_squares) do
 			s.x-=move
@@ -96,6 +106,16 @@ function move()
 	if btnp(1) then
 		if cx+cw>=96 then
 			move=0
+		end
+		
+		for cs in all(pce_squares) do
+			for s in all(squares) do
+				if cs.y==s.y then
+					if cs.x+8 == s.x then 
+						move=0
+					end
+				end
+			end
 		end
 	
 		current_pce.x+=move
@@ -117,11 +137,10 @@ function on_floor()
 	else
 		for cp_sqr in all(pce_squares) do
 			for sqr in all(squares) do
-				if cp_sqr.y+8 >= sqr.y then
-					if cp_sqr.x == sqr.x then
-						stop_pce()
-						return true
-					end
+				if cp_sqr.y+8 == sqr.y and
+					cp_sqr.x == sqr.x then
+					stop_pce()
+					return true
 				end
 			end
 		end
