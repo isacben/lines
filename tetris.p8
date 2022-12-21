@@ -13,9 +13,9 @@ function _init()
 	current_pce={}
 	squares={}
 	
-	tee()
+	generate(ael)
 	
-	debug="debug"
+	debug="..."
 end
 
 function _update()
@@ -65,7 +65,7 @@ end
 
 function down()
 	if on_floor() then
-		spawn("tee")
+		spawn(atee)
 	end
 	
 	if t%spd == 0 then
@@ -124,7 +124,7 @@ function move()
 		end
 	end
 	
-	debug=cx..","..cx+cw..","..move
+	--debug=cx..","..cx+cw..","..move
 end
 
 function on_floor()
@@ -225,12 +225,61 @@ function tee()
 	current_pce.w=24
 	current_pce.h=16
 end
+
+function generate(arr)
+	init_current_pce()
+	
+	for row=1,3 do
+		for col=1,3 do
+			if arr[row][col]==1 then
+				local s={}
+				s.x=piece_x+(col-1)*8
+				current_pce.w=col*8
+				
+				s.y=piece_y+(row-1)*8
+				current_pce.h=row*8
+				
+				s.spr=3
+				add(pce_squares,s)
+			end
+		end
+	end
+	
+	debug=current_pce.w..","..current_pce.h
+end
 -->8
 --general
 
-function spawn(p_name)
-	block()
+function spawn(arr)
+	init_current_pce()
+	
+	generate(arr)
 end
+
+function init_current_pce()
+	current_pce.x=piece_x
+	current_pce.y=piece_y
+	current_pce.w=0
+	current_pce.h=0
+end
+-->8
+ablock={
+	{1,1,0},
+	{1,1,0};
+	{0,0,0}
+}
+
+atee={
+	{0,1,0},
+	{1,1,1},
+	{0,0,0}
+}
+
+ael={
+	{1,0,0},
+	{1,0,0},
+	{1,1,0}
+}
 __gfx__
 00000000066666610ffffff407777772077777730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
