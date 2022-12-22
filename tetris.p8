@@ -14,7 +14,7 @@ function _init()
 	squares={}
 	
 	init_current_pce()
-	generate(aline,2,8,32)
+	generate(als,2,8,32)
 	
 	--debug="..."
 end
@@ -65,14 +65,16 @@ end
 -- move & collisions
 
 function down()
-	if on_floor() then
-		init_current_pce()
-		generate(atee,4,3,2)
-	end
 	
 	if t%spd == 0 then
 		current_pce.y+=vel
 		
+		if on_floor() then
+			stop_pce()
+			init_current_pce()
+			generate(atee,4,3,2)
+		end
+	
 		for square in all(pce_squares) do
 			square.y+=vel
 		end
@@ -86,11 +88,9 @@ function move()
 	
 	--move left
 	if btnp(0) then
-		--if cx<=0 then
-		--	move=0
-		--end
-		
 		for cs in all(pce_squares) do
+			
+			--collision with squares
 			for s in all(squares) do
 				if cs.y==s.y then
 					if cs.x == s.x+8 then 
@@ -99,6 +99,7 @@ function move()
 				end
 			end
 			
+			--collision with the wall
 			if cs.x<=0 then
 				move=0
 			end
@@ -112,11 +113,9 @@ function move()
 	
 	--move rigth
 	if btnp(1) then
-		--if cx+cw>=96 then
-		--	move=0
-		--end
-		
 		for cs in all(pce_squares) do
+			
+			--collision with squares
 			for s in all(squares) do
 				if cs.y==s.y then
 					if cs.x+8 == s.x then 
@@ -125,6 +124,7 @@ function move()
 				end
 			end
 			
+			--collision with the wall
 			if cs.x+8>=96 then
 				move=0
 			end
@@ -136,45 +136,33 @@ function move()
 		end
 	end
 	
+	--rotate
 	if btnp(2) then
 		rotate(acurr)
 	end
-	
-	--debug=cx..","..current_pce.y..","..cw
-	--debug=current_pce.x
 end
 
-function on_floor()
-	local cy=current_pce.y
-	local ch=current_pce.h
-	
-	--if cy+ch>=120 then	
-	--	stop_pce()
-	--	return true
-	--else
+
+function on_floor()	
 	for cp_sqr in all(pce_squares) do
+		
+		--collision with squares
 		for sqr in all(squares) do
 			if cp_sqr.y+8 == sqr.y and
 				cp_sqr.x == sqr.x then
-				stop_pce()
+				--stop_pce()
 				return true
 			end
 		end
 		
+		--collision with floor
 		if cp_sqr.y+8>=120 then
 			stop_pce()
 			return true
 		end
 	end
-	--end
-	--debug="on floor"
 end
 
-function collision(a,b)
-	if a.y>b.y then
-		return true
-	end
-end
 
 function stop_pce()
 	for s in all(pce_squares) do
@@ -275,6 +263,18 @@ ael={
 	{1,0,0},
 	{1,0,0},
 	{1,1,0}
+}
+
+als={
+	{1,1,0},
+	{0,1,1},
+	{0,0,0}
+}
+
+alr={
+	{0,1,1},
+	{1,1,0},
+	{0,0,0}
 }
 
 aline={
