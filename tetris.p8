@@ -13,7 +13,8 @@ function _init()
 	current_pce={}
 	squares={}
 	
-	generate(ael)
+	acurr=ael
+	generate(acurr,2)
 	
 	debug="..."
 end
@@ -65,7 +66,7 @@ end
 
 function down()
 	if on_floor() then
-		spawn(atee)
+		generate(atee,4)
 	end
 	
 	if t%spd == 0 then
@@ -124,6 +125,10 @@ function move()
 		end
 	end
 	
+	if btnp(2) then
+		rotate(acurr)
+	end
+	
 	--debug=cx..","..cx+cw..","..move
 end
 
@@ -164,73 +169,11 @@ end
 -->8
 -- pieces
 
-function block()
-	local s1={}
-	s1.x=piece_x
-	s1.y=piece_y
-	s1.spr=1
-	add(pce_squares,s1)
-	
-	local s2={}
-	s2.x=s1.x+8
-	s2.y=s1.y
-	s2.spr=1
-	add(pce_squares,s2)
-	
-	local s3={}
-	s3.x=s1.x
-	s3.y=s1.y+8
-	s3.spr=1
-	add(pce_squares,s3)
-	
-	local s4={}
-	s4.x=s1.x+8
-	s4.y=s1.y+8
-	s4.spr=1
-	add(pce_squares,s4)
-	
-	current_pce.x=piece_x
-	current_pce.y=piece_y
-	current_pce.w=16
-	current_pce.h=16
-end
-
-function tee()
-	local s1={}
-	s1.x=piece_x
-	s1.y=piece_y
-	s1.spr=2
-	add(pce_squares,s1)
-	
-	local s2={}
-	s2.x=piece_x-8
-	s2.y=piece_y+8
-	s2.spr=2
-	add(pce_squares,s2)
-	
-	local s3={}
-	s3.x=piece_x
-	s3.y=piece_y+8
-	s3.spr=2
-	add(pce_squares,s3)
-	
-	local s4={}
-	s4.x=piece_x+8
-	s4.y=piece_y+8
-	s4.spr=2
-	add(pce_squares,s4)
-	
-	current_pce.x=piece_x-8
-	current_pce.y=piece_y
-	current_pce.w=24
-	current_pce.h=16
-end
-
-function generate(arr)
+function generate(arr,_spr)
 	init_current_pce()
 	
-	for row=1,3 do
-		for col=1,3 do
+	for row=1,#arr do
+		for col=1,#arr do
 			if arr[row][col]==1 then
 				local s={}
 				s.x=piece_x+(col-1)*8
@@ -239,7 +182,7 @@ function generate(arr)
 				s.y=piece_y+(row-1)*8
 				current_pce.h=row*8
 				
-				s.spr=3
+				s.spr=_spr
 				add(pce_squares,s)
 			end
 		end
@@ -250,19 +193,41 @@ end
 -->8
 --general
 
-function spawn(arr)
-	init_current_pce()
-	
-	generate(arr)
-end
-
 function init_current_pce()
 	current_pce.x=piece_x
 	current_pce.y=piece_y
 	current_pce.w=0
 	current_pce.h=0
 end
+
+function rotate(arr)
+	
+	local temp={
+		{0,0,0},
+		{0,0,0},
+		{0,0,0}
+	}
+	
+	local n=4
+	for r=1,3 do
+		for c=1,3 do
+			temp[c][n-r]=arr[r][c]
+		end
+	end
+	pce_squares={}
+	acurr=temp
+	
+	generate(acurr,3)
+end
 -->8
+--arrays
+
+acurr={
+	{0,0,0},
+	{0,0,0},
+	{0,0,0}
+}
+
 ablock={
 	{1,1,0},
 	{1,1,0};
