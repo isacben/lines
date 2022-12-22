@@ -3,7 +3,7 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=60
+	spd=20
 	vel=8
 	piece_x=0 --center of 96
 	piece_y=0
@@ -84,10 +84,11 @@ function move()
 	local cx=current_pce.x
 	local cw=current_pce.w
 	
+	--move left
 	if btnp(0) then
-		if cx<=0 then
-			move=0
-		end
+		--if cx<=0 then
+		--	move=0
+		--end
 		
 		for cs in all(pce_squares) do
 			for s in all(squares) do
@@ -97,6 +98,10 @@ function move()
 					end
 				end
 			end
+			
+			if cs.x<=0 then
+				move=0
+			end
 		end
 		
 		current_pce.x-=move
@@ -105,10 +110,11 @@ function move()
 		end
 	end
 	
+	--move rigth
 	if btnp(1) then
-		if cx+cw>=96 then
-			move=0
-		end
+		--if cx+cw>=96 then
+		--	move=0
+		--end
 		
 		for cs in all(pce_squares) do
 			for s in all(squares) do
@@ -117,6 +123,10 @@ function move()
 						move=0
 					end
 				end
+			end
+			
+			if cs.x+8>=96 then
+				move=0
 			end
 		end
 	
@@ -138,20 +148,25 @@ function on_floor()
 	local cy=current_pce.y
 	local ch=current_pce.h
 	
-	if cy+ch>=120 then	
-		stop_pce()
-		return true
-	else
-		for cp_sqr in all(pce_squares) do
-			for sqr in all(squares) do
-				if cp_sqr.y+8 == sqr.y and
-					cp_sqr.x == sqr.x then
-					stop_pce()
-					return true
-				end
+	--if cy+ch>=120 then	
+	--	stop_pce()
+	--	return true
+	--else
+	for cp_sqr in all(pce_squares) do
+		for sqr in all(squares) do
+			if cp_sqr.y+8 == sqr.y and
+				cp_sqr.x == sqr.x then
+				stop_pce()
+				return true
 			end
 		end
+		
+		if cp_sqr.y+8>=120 then
+			stop_pce()
+			return true
+		end
 	end
+	--end
 	--debug="on floor"
 end
 
