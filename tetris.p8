@@ -3,9 +3,9 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=10
+	spd=60
 	vel=8
-	piece_x=48 --center of 96
+	piece_x=0 --center of 96
 	piece_y=0
 	
 	p_names={"block","tee"}
@@ -13,10 +13,10 @@ function _init()
 	current_pce={}
 	squares={}
 	
-	acurr=ael
-	generate(acurr,2)
+	init_current_pce()
+	generate(aline,2,8,32)
 	
-	debug="..."
+	--debug="..."
 end
 
 function _update()
@@ -66,7 +66,8 @@ end
 
 function down()
 	if on_floor() then
-		generate(atee,4)
+		init_current_pce()
+		generate(atee,4,3,2)
 	end
 	
 	if t%spd == 0 then
@@ -129,7 +130,8 @@ function move()
 		rotate(acurr)
 	end
 	
-	--debug=cx..","..cx+cw..","..move
+	--debug=cx..","..current_pce.y..","..cw
+	--debug=current_pce.x
 end
 
 function on_floor()
@@ -169,18 +171,22 @@ end
 -->8
 -- pieces
 
-function generate(arr,_spr)
-	init_current_pce()
+function generate(arr,_spr,w,h)
+	--init_current_pce()
+	acurr=arr
+	
+	current_pce.w=w
+	current_pce.h=h
 	
 	for row=1,#arr do
 		for col=1,#arr do
 			if arr[row][col]==1 then
 				local s={}
-				s.x=piece_x+(col-1)*8
-				current_pce.w=col*8
+				s.x=current_pce.x+(col-1)*8
+				--current_pce.w=col*8
 				
-				s.y=piece_y+(row-1)*8
-				current_pce.h=row*8
+				s.y=current_pce.y+(row-1)*8
+				--current_pce.h=row*8
 				
 				s.spr=_spr
 				add(pce_squares,s)
@@ -188,7 +194,7 @@ function generate(arr,_spr)
 		end
 	end
 	
-	debug=current_pce.w..","..current_pce.h
+	--debug=current_pce.w..","..current_pce.h
 end
 -->8
 --general
@@ -201,37 +207,47 @@ function init_current_pce()
 end
 
 function rotate(arr)
+	local temp={}
 	
-	local temp={
-		{0,0,0},
-		{0,0,0},
-		{0,0,0}
-	}
+	for row=1,#arr do
+		temp[row]={}
+		for col=1,#arr do
+			temp[row][col]=0
+		end
+	end
 	
-	local n=4
-	for r=1,3 do
-		for c=1,3 do
+	local n=#arr+1
+	for r=1,#arr do
+		for c=1,#arr do
 			temp[c][n-r]=arr[r][c]
 		end
 	end
 	pce_squares={}
 	acurr=temp
 	
-	generate(acurr,3)
+	generate(acurr,3,current_pce.h,current_pce.w)
+end
+
+function new_arr(size)
+	local row={}
+	acurr={}
+	
+	for i=1,size do
+		add(row,0)
+	end
+	
+	for j=1,size do
+		add{acurr,{0,0,0,0}}
+	end
 end
 -->8
 --arrays
 
-acurr={
-	{0,0,0},
-	{0,0,0},
-	{0,0,0}
-}
+acurr={}
 
 ablock={
-	{1,1,0},
-	{1,1,0};
-	{0,0,0}
+	{1,1},
+	{1,1}
 }
 
 atee={
@@ -244,6 +260,13 @@ ael={
 	{1,0,0},
 	{1,0,0},
 	{1,1,0}
+}
+
+aline={
+	{1,0,0,0},
+	{1,0,0,0},
+	{1,0,0,0},
+	{1,0,0,0}
 }
 __gfx__
 00000000066666610ffffff407777772077777730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
