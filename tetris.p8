@@ -5,19 +5,20 @@ function _init()
 	t=0
 	spd=60
 	vel=8
-	piece_x=0 --center of 96
+	piece_x=16 --center of 96
 	piece_y=0
 	
 	reset_board()
 	
 	p_names={"block","tee"}
 	pce_squares={}
+	buff_squares={}
 	current_pce={}
 	squares={}
 	
 	init_current_pce()
 	
-	generate(alr,2)
+	generate(el,2)
 	
 	debug="tetris"
 end
@@ -204,8 +205,15 @@ function init_current_pce()
 	current_pce.h=0
 end
 
+
+function overlaping()
+	
+end
+
+
 function rotate(arr)
 	local temp={}
+	buff_squares={}
 	
 	--create arry of a given size
 	--for row=1,#arr do
@@ -232,6 +240,27 @@ function rotate(arr)
 	end
 	
 	--check overlaping
+	for row=1,#temp do
+		for col=1,#temp[1] do
+			if temp[row][col]==1 then
+				local s={}
+				s.x=current_pce.x+(col-1)*8
+				s.y=current_pce.y+(row-1)*8
+				add(buff_squares,s)
+			end
+		end
+	end
+	for bs in all(buff_squares) do
+		if bs.x<0 or bs.x>=96 or
+			bs.y>=120 then
+			return false
+		end
+		for s in all(squares) do
+			if bs.x==s.x and bs.y==s.y then
+				return false
+			end
+		end
+	end
 	
 	
 	--re paint the piece
@@ -282,27 +311,30 @@ tee={
 	{0,0,0}
 }
 
+--0,1,0
+--0,1,1
+--0,1,0
 el={
-	{1,0},
-	{1,0},
-	{1,1}
+	{0,1,0},
+	{0,1,0},
+	{0,1,1}
 }
 
-als={
+asl={
 	{1,1,0},
 	{0,1,1}
 }
 
-alr={
+asr={
 	{0,1,1},
 	{1,1,0}
 }
 
 aline={
-	{1},
-	{1},
-	{1},
-	{1}
+	{0,1,0},
+	{0,1,0},
+	{0,1,0},
+	{0,1,0}
 }
 
 board={
