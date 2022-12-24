@@ -3,10 +3,12 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=20
+	spd=60
 	vel=8
 	piece_x=0 --center of 96
 	piece_y=0
+	
+	reset_board()
 	
 	p_names={"block","tee"}
 	pce_squares={}
@@ -14,9 +16,10 @@ function _init()
 	squares={}
 	
 	init_current_pce()
-	generate(als,2,8,32)
 	
-	--debug="..."
+	generate(alr,2)
+	
+	debug="tetris"
 end
 
 function _update()
@@ -72,7 +75,7 @@ function down()
 		if on_floor() then
 			stop_pce()
 			init_current_pce()
-			generate(atee,4,3,2)
+			generate(tee,4)
 		end
 	
 		for square in all(pce_squares) do
@@ -174,23 +177,15 @@ end
 -->8
 -- pieces
 
-function generate(arr,_spr,w,h)
-	--init_current_pce()
+function generate(arr,_spr)
 	acurr=arr
 	
-	current_pce.w=w
-	current_pce.h=h
-	
 	for row=1,#arr do
-		for col=1,#arr do
+		for col=1,#arr[1] do
 			if arr[row][col]==1 then
 				local s={}
 				s.x=current_pce.x+(col-1)*8
-				--current_pce.w=col*8
-				
 				s.y=current_pce.y+(row-1)*8
-				--current_pce.h=row*8
-				
 				s.spr=_spr
 				add(pce_squares,s)
 			end
@@ -212,23 +207,37 @@ end
 function rotate(arr)
 	local temp={}
 	
-	for row=1,#arr do
-		temp[row]={}
-		for col=1,#arr do
-			temp[row][col]=0
-		end
-	end
+	--create arry of a given size
+	--for row=1,#arr do
+	--	temp[row]={}
+	--	for col=1,#arr[1] do
+	--		temp[row][col]=0
+	--	end
+	--end
+	
+	--rotate the array
+	--local n=#arr+1
+	--for r=1,#arr do
+	--	for c=1,#arr do
+	--		temp[c][n-r]=arr[r][c]
+	--	end
+	--end
 	
 	local n=#arr+1
-	for r=1,#arr do
-		for c=1,#arr do
-			temp[c][n-r]=arr[r][c]
+	for col=1,#arr[1] do
+		temp[col]={}
+		for row=1,#arr do
+			temp[col][n-row]=arr[row][col]
 		end
 	end
+	
+	--check overlaping
+	
+	
+	--re paint the piece
 	pce_squares={}
 	acurr=temp
-	
-	generate(acurr,3,current_pce.h,current_pce.w)
+	generate(acurr,3)
 end
 
 function new_arr(size)
@@ -243,45 +252,61 @@ function new_arr(size)
 		add{acurr,{0,0,0,0}}
 	end
 end
+
+
+function reset_board()
+	for row=1,13 do
+		board[row]={}
+		for col=1,14 do
+			if col==1 or col==14 or row==13 then
+				board[row][col]=2
+			else
+				board[row][col]=0
+			end
+		end
+	end
+end
 -->8
 --arrays
 
 acurr={}
 
-ablock={
+block={
 	{1,1},
 	{1,1}
 }
 
-atee={
+tee={
 	{0,1,0},
 	{1,1,1},
 	{0,0,0}
 }
 
-ael={
-	{1,0,0},
-	{1,0,0},
-	{1,1,0}
+el={
+	{1,0},
+	{1,0},
+	{1,1}
 }
 
 als={
 	{1,1,0},
-	{0,1,1},
-	{0,0,0}
+	{0,1,1}
 }
 
 alr={
 	{0,1,1},
-	{1,1,0},
-	{0,0,0}
+	{1,1,0}
 }
 
 aline={
-	{1,0,0,0},
-	{1,0,0,0},
-	{1,0,0,0},
-	{1,0,0,0}
+	{1},
+	{1},
+	{1},
+	{1}
+}
+
+board={
+	{2,0,0,0,0,0,0,0,0,0,0,0,0,2},
 }
 __gfx__
 00000000066666610ffffff407777772077777730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
