@@ -3,9 +3,9 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=60
+	spd=20
 	vel=8
-	piece_x=16 --center of 96
+	piece_x=32 --center of 96
 	piece_y=0
 	
 	reset_board()
@@ -178,6 +178,12 @@ end
 -->8
 -- pieces
 
+function init_current_pce()
+	current_pce.x=piece_x
+	current_pce.y=piece_y
+end
+
+
 function generate(arr,_spr)
 	acurr=arr
 	
@@ -192,22 +198,6 @@ function generate(arr,_spr)
 			end
 		end
 	end
-	
-	--debug=current_pce.w..","..current_pce.h
-end
--->8
---general
-
-function init_current_pce()
-	current_pce.x=piece_x
-	current_pce.y=piece_y
-	current_pce.w=0
-	current_pce.h=0
-end
-
-
-function overlaping()
-	
 end
 
 
@@ -215,22 +205,7 @@ function rotate(arr)
 	local temp={}
 	buff_squares={}
 	
-	--create arry of a given size
-	--for row=1,#arr do
-	--	temp[row]={}
-	--	for col=1,#arr[1] do
-	--		temp[row][col]=0
-	--	end
-	--end
-	
-	--rotate the array
-	--local n=#arr+1
-	--for r=1,#arr do
-	--	for c=1,#arr do
-	--		temp[c][n-r]=arr[r][c]
-	--	end
-	--end
-	
+	--rotate into temp
 	local n=#arr+1
 	for col=1,#arr[1] do
 		temp[col]={}
@@ -239,7 +214,7 @@ function rotate(arr)
 		end
 	end
 	
-	--check overlaping
+	--add to buffer
 	for row=1,#temp do
 		for col=1,#temp[1] do
 			if temp[row][col]==1 then
@@ -250,6 +225,8 @@ function rotate(arr)
 			end
 		end
 	end
+	
+	--check overlaping
 	for bs in all(buff_squares) do
 		if bs.x<0 or bs.x>=96 or
 			bs.y>=120 then
@@ -262,36 +239,20 @@ function rotate(arr)
 		end
 	end
 	
-	
 	--re paint the piece
 	pce_squares={}
 	acurr=temp
 	generate(acurr,3)
 end
-
-function new_arr(size)
-	local row={}
-	acurr={}
-	
-	for i=1,size do
-		add(row,0)
-	end
-	
-	for j=1,size do
-		add{acurr,{0,0,0,0}}
-	end
-end
+-->8
+--state machine
 
 
 function reset_board()
-	for row=1,13 do
+	for row=1,12 do
 		board[row]={}
-		for col=1,14 do
-			if col==1 or col==14 or row==13 then
-				board[row][col]=2
-			else
-				board[row][col]=0
-			end
+		for col=1,13 do
+			board[row][col]=0
 		end
 	end
 end
@@ -337,9 +298,7 @@ aline={
 	{0,1,0}
 }
 
-board={
-	{2,0,0,0,0,0,0,0,0,0,0,0,0,2},
-}
+board={}
 __gfx__
 00000000066666610ffffff407777772077777730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 000000006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
