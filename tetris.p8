@@ -3,14 +3,18 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=20
+	spd=10
 	vel=8
+	
+	--start, game, over
+	state="start"
+	
 	piece_x=32 --center of 96
 	piece_y=0
 	
 	reset_board()
 	
-	p_names={"block","tee"}
+	p_names={"ablock","atee"}
 	pce_squares={}
 	buff_squares={}
 	current_pce={}
@@ -18,29 +22,42 @@ function _init()
 	
 	init_current_pce()
 	
-	generate(el,2)
-	
-	debug="tetris"
+	--debug="tetris"
 end
 
 function _update()
-	down()
-	move()
+	update()
 end
 
 function _draw()
 	cls(0)
 	t+=1
 	
-	stage()
 	draw()
-	
 	print(debug,0,0,15)
 end
 -->8
 -- draw
 
 function draw()
+	--start screen
+	if state=="start" then
+		start_scr()
+	
+	--game screen
+	elseif state=="game" then
+		stage()
+		paint_squares()
+	end
+end
+
+
+function start_scr()
+	print("press x to start",20,40,13)
+end
+
+
+function paint_squares()
 	for square in all(pce_squares) do
 		--[[rect(
 			square.x,
@@ -76,7 +93,7 @@ function down()
 		if on_floor() then
 			stop_pce()
 			init_current_pce()
-			generate(tee,4)
+			spawn()
 		end
 	
 		for square in all(pce_squares) do
@@ -184,6 +201,16 @@ function init_current_pce()
 end
 
 
+function spawn()
+	current_pce.type=flr(rnd(7))+1
+	generate(
+		pce_type[current_pce.type],
+		current_pce.type
+	)
+	debug="piece #:"..current_pce.type
+end
+
+
 function generate(arr,_spr)
 	acurr=arr
 	
@@ -242,10 +269,25 @@ function rotate(arr)
 	--re paint the piece
 	pce_squares={}
 	acurr=temp
-	generate(acurr,3)
+	generate(acurr,current_pce.type)
 end
 -->8
---state machine
+--update
+
+function update()
+	--start screen
+	if state=="start" then
+		if btnp(5) then
+			spawn()
+			state="game"
+		end
+	
+	--game screen
+	elseif state=="game" then
+		down()
+		move()
+	end
+end
 
 
 function reset_board()
@@ -261,24 +303,37 @@ end
 
 acurr={}
 
-block={
+pce_type={
+	ablock,
+	atee,
+	aell,
+	aelr,
+	asl,
+	asr,
+	aline,
+}
+
+ablock={
 	{1,1},
 	{1,1}
 }
 
-tee={
+atee={
 	{0,1,0},
 	{1,1,1},
 	{0,0,0}
 }
 
---0,1,0
---0,1,1
---0,1,0
-el={
+aell={
 	{0,1,0},
 	{0,1,0},
 	{0,1,1}
+}
+
+aelr={
+	{0,1,0},
+	{0,1,0},
+	{1,1,0}
 }
 
 asl={
@@ -298,13 +353,23 @@ aline={
 	{0,1,0}
 }
 
+pce_type={
+	ablock,
+	atee,
+	aell,
+	aelr,
+	asl,
+	asr,
+	aline,
+}
+
 board={}
 __gfx__
-00000000066666610ffffff407777772077777730000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-007007006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000770006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000770006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-007007006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000000006cccccc1f99999947eeeeee27bbbbbb30000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00000000111111104444444022222220333333300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000066666610eeeeee107777772077777730ffffff40eeeeee2066666610000000000000000000000000000000000000000000000000000000000000000
+000000006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+007007006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+000770006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+000770006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+007007006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+000000006cccccc1e22222217eeeeee27bbbbbb3f9999994e88888826dddddd10000000000000000000000000000000000000000000000000000000000000000
+00000000111111101111111022222220333333304444444022222220111111100000000000000000000000000000000000000000000000000000000000000000
