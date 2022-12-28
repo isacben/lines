@@ -16,10 +16,12 @@ function _init()
 	
 	reset_board()
 	
+	--piece stuff
 	p_names={"ablock","atee"}
 	pce_squares={}
 	buff_squares={}
 	current_pce={}
+	next_pce=get_next()
 	squares={}
 	
 	init_current_pce()
@@ -61,24 +63,12 @@ end
 
 function paint_squares()
 	for square in all(pce_squares) do
-		--[[rect(
-			square.x,
-			square.y,
-			square.x+8,
-			square.y+8,
-			9)]]--
 		spr(square.spr,square.x,square.y)
 	end
 	
 	for square in all(squares) do
-		--[[rect(
-			square.x,
-			square.y,
-			square.x+8,
-			square.y+8,
-			9)]]--
 		spr(square.spr,square.x,square.y)
-		end
+	end
 end
 
 function stage()
@@ -115,6 +105,10 @@ function stage()
 	print(lines,112-(#lines*2),71,5)
 
 	rectfill(96,87,128,119,6)
+	preview(
+		pce_type[next_pce],
+		next_pce
+	)
 end
 
 
@@ -239,13 +233,22 @@ function init_current_pce()
 end
 
 
+function get_next()
+	local n
+	repeat
+		n=flr(rnd(7))+1
+	until n!=current_pce.type
+	return n
+end
+
 function spawn()
-	current_pce.type=flr(rnd(7))+1
+	current_pce.type=next_pce
 	generate(
 		pce_type[current_pce.type],
 		current_pce.type
 	)
-	debug="piece #:"..current_pce.type
+	next_pce=get_next()
+	debug=current_pce.type.."/"..next_pce
 end
 
 
@@ -309,6 +312,21 @@ function rotate(arr)
 	pce_squares={}
 	acurr=temp
 	generate(acurr,current_pce.type)
+end
+
+
+function preview(arr,_spr)
+	for row=1,#arr do
+		for col=1,#arr[1] do
+			if arr[row][col]==1 then
+				spr(
+					_spr,
+					96+(col-1)*8,
+					88+(row-1)*8
+				)
+			end
+		end
+	end
 end
 -->8
 --update
