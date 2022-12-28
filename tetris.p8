@@ -55,7 +55,7 @@ end
 
 
 function start_scr()
-	print("press x to start",20,40,13)
+	cprint("press x to start",40,13)
 end
 
 
@@ -89,14 +89,33 @@ function stage()
 		spr(8,88,i*8)
 	end
 	
-	rectfill(100,4,124,16,6)
-	rect(101,5,123,15,5)
-	print("score",103,8,5)
+
+	rectfill(96,10,128,27,6)
+	rectfill(96,11,128,16,5)
+	line(96,18,128,18,5)
+	line(96,26,128,26,5)
+	
+	rectfill(99,4,123,14,6)
+	rect(100,5,122,13,5)	
+	print("score",102,7,5)
+	local iii="100"
+	print(iii,112-(#iii*2),20,5)
+
+		
+	rectfill(100,41,124,58,6)
+	rect(101,42,123,57,5)
+	print("level",103,44,5)
+	print("0",103,51,5)
 end
 
-function label(h)
-	rectfill(100,4,124,16,6)
-	rect(101,5,123,15,5)
+function label(y,lines)
+	rectfill(100,y,124,y+10*lines,6)
+	rect(101,y+1,123,y+10*lines-1,5)
+end
+
+
+function cprint(s,y,c)
+	print(s,64-#s*2,y,c)
 end
 -->8
 -- move & collisions
