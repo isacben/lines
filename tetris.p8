@@ -98,19 +98,23 @@ function stage()
 	rectfill(99,4,123,14,6)
 	rect(100,5,122,13,5)	
 	print("score",102,7,5)
-	local iii="100"
-	print(iii,112-(#iii*2),20,5)
+	local score="100"
+	print(score,112-(#score*2),20,5)
 
 		
-	rectfill(100,41,124,58,6)
-	rect(101,42,123,57,5)
-	print("level",103,44,5)
-	print("0",103,51,5)
-end
+	rectfill(99,41,123,58,6)
+	rect(100,42,122,57,5)
+	print("level",102,44,5)
+	local level="2"
+	print(level,112-(#level*2),51,5)
 
-function label(y,lines)
-	rectfill(100,y,124,y+10*lines,6)
-	rect(101,y+1,123,y+10*lines-1,5)
+	rectfill(99,61,123,78,6)
+	rect(100,62,122,77,5)
+	print("lines",102,64,5)
+	local lines="8"
+	print(lines,112-(#lines*2),71,5)
+
+	rectfill(96,87,128,119,6)
 end
 
 
