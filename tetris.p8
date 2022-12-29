@@ -13,7 +13,7 @@ function _init()
 	state="start"
 	
 	piece_x=32 --center of 96
-	piece_y=0
+	piece_y=8
 	
 	board={}
 	reset_board()
@@ -229,14 +229,6 @@ function stop_pce()
 	pce_squares={}
 	check_lines()
 	
-	--debug board matrix
-	debug=""
-	for j=13,15 do
-		for i=1,10 do
-			debug=debug..","..board[j][i]
-		end
-		debug=debug.."\n"
-	end
 end
 -->8
 -- pieces
@@ -454,17 +446,61 @@ function to_board(x,y)
 end
 
 
+function update_board()
+	reset_board()
+	
+	--debug board matrix
+	debug=""
+	for j=13,15 do
+		for i=1,10 do
+			debug=debug..","..board[j][i]
+		end
+		debug=debug.."\n"
+	end
+	
+	for s in all(squares) do
+		debug=(s.y/8)..","..(s.x/8)
+		board[s.y/8][s.x/8]=1
+	end
+end
+
+
 function check_lines()
 	local l=0
 	local r={}
+	local remove={}
+	
+	--check completed lines
 	for row=1,15 do
 		r=board[row]
 		if is_line(r) then
 			l+=1
+			add(remove,row)
 		end 
 	end
 	
-	lines=l	
+	if #remove>0 then
+		--remove completed lines
+		for rem in all(remove) do
+			for s in all(squares) do
+				if s.y==rem*8 then
+					del(squares,s)
+				end
+			end
+		end
+	
+		for s in all(squares) do
+			if s.y<remove[1]*8 then
+				--board[s.y/8][s.x/8]=0
+				s.y+=8*#remove
+				--board[s.y/8][s.x/8]=1
+			end
+		end
+	
+		update_board()
+	end
+	
+	lines+=l	
 end
 
 
