@@ -7,6 +7,7 @@ function _init()
 	vel=8
 	lwall=8
 	rwall=88
+	lines=0
 	
 	--start, game, over
 	state="start"
@@ -14,6 +15,7 @@ function _init()
 	piece_x=32 --center of 96
 	piece_y=0
 	
+	board={}
 	reset_board()
 	
 	--piece stuff
@@ -101,8 +103,9 @@ function stage()
 	rectfill(99,61,123,78,6)
 	rect(100,62,122,77,5)
 	print("lines",102,64,5)
-	local lines="8"
-	print(lines,112-(#lines*2),71,5)
+	
+	local lstr=""..lines
+	print(lstr,112-(#lstr*2),71,5)
 
 	rectfill(96,87,128,119,6)
 	preview(
@@ -220,9 +223,20 @@ end
 function stop_pce()
 	for s in all(pce_squares) do
 		add(squares,s)
+		to_board(s.x,s.y)
 	end
-		
+	
 	pce_squares={}
+	check_lines()
+	
+	--debug board matrix
+	debug=""
+	for j=13,15 do
+		for i=1,10 do
+			debug=debug..","..board[j][i]
+		end
+		debug=debug.."\n"
+	end
 end
 -->8
 -- pieces
@@ -248,7 +262,6 @@ function spawn()
 		current_pce.type
 	)
 	next_pce=get_next()
-	debug=current_pce.type.."/"..next_pce
 end
 
 
@@ -355,16 +368,6 @@ function update()
 		move()
 	end
 end
-
-
-function reset_board()
-	for row=1,12 do
-		board[row]={}
-		for col=1,13 do
-			board[row][col]=0
-		end
-	end
-end
 -->8
 --arrays
 
@@ -428,8 +431,51 @@ pce_type={
 	asr,
 	aline,
 }
+-->8
+--board
 
-board={}
+function reset_board()
+	for row=1,15 do
+		board[row]={}
+		for col=1,10 do
+			board[row][col]=0
+		end
+	end
+end
+
+
+function to_board(x,y)
+	local row
+	local col
+	
+	row=y/8
+	col=x/8
+	board[row][col]=1
+end
+
+
+function check_lines()
+	local l=0
+	local r={}
+	for row=1,15 do
+		r=board[row]
+		if is_line(r) then
+			l+=1
+		end 
+	end
+	
+	lines=l	
+end
+
+
+function is_line(arr)
+	for a in all(arr) do
+		if a==0 then
+			return false
+		end
+	end
+	return true
+end
 __gfx__
 0000000055555555555555555555555555555555555555555555555555555555d56dd56d00000000000000000000000000000000000000000000000000000000
 000000005dddddd55dddddd55dddddd5566666655dddddd55dddddd556666665d5ddd5dd00000000000000000000000000000000000000000000000000000000
