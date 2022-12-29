@@ -316,13 +316,23 @@ end
 
 
 function preview(arr,_spr)
+	local ofx=0
+	local ofy=0
+	if #arr[1]==3 then
+		ofx=4
+	elseif #arr[1]==2 then
+		ofx=8
+	elseif #arr[1]==4 then
+		ofy=-4
+	end
+	
 	for row=1,#arr do
 		for col=1,#arr[1] do
 			if arr[row][col]==1 then
 				spr(
 					_spr,
-					96+(col-1)*8,
-					88+(row-1)*8
+					96+ofx+(col-1)*8,
+					96+ofy+(row-1)*8
 				)
 			end
 		end
@@ -382,15 +392,15 @@ atee={
 }
 
 aell={
-	{0,1,0},
-	{0,1,0},
-	{0,1,1}
+	{0,0,1},
+	{1,1,1},
+	{0,0,0}
 }
 
 aelr={
-	{0,1,0},
-	{0,1,0},
-	{1,1,0}
+	{1,0,0},
+	{1,1,1},
+	{0,0,0}
 }
 
 asl={
@@ -404,10 +414,9 @@ asr={
 }
 
 aline={
-	{0,1,0},
-	{0,1,0},
-	{0,1,0},
-	{0,1,0}
+	{0,0,0,0},
+	{1,1,1,1},
+	{0,0,0,0}
 }
 
 pce_type={
