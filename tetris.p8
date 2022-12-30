@@ -8,6 +8,8 @@ function _init()
 	lwall=8
 	rwall=88
 	lines=0
+	score=0
+	level=0
 	
 	--start.game.delete.over
 	state="start"
@@ -116,22 +118,18 @@ function stage()
 	rectfill(99,4,123,14,6)
 	rect(100,5,122,13,5)	
 	print("score",102,7,5)
-	local score="100"
-	print(score,112-(#score*2),20,5)
+	print(tostr(score),112-(#tostr(score)*2),20,5)
 
 		
 	rectfill(99,41,123,58,6)
 	rect(100,42,122,57,5)
 	print("level",102,44,5)
-	local level="2"
-	print(level,112-(#level*2),51,5)
+	print(tostr(level),112-(#tostr(level)*2),51,5)
 
 	rectfill(99,61,123,78,6)
 	rect(100,62,122,77,5)
 	print("lines",102,64,5)
-	
-	local lstr=""..lines
-	print(lstr,112-(#lstr*2),71,5)
+	print(tostr(lines),112-(#tostr(lines)*2),71,5)
 
 	rectfill(96,87,128,119,6)
 	preview(
@@ -527,9 +525,10 @@ function check_lines()
 		end
 	
 		update_board()
+		score+=calc_points(l)
+		lines+=l
+		level=flr(lines/5)
 	end
-	
-	lines+=l	
 end
 
 
@@ -540,6 +539,12 @@ function is_line(arr)
 		end
 	end
 	return true
+end
+
+
+function calc_points(l)
+	local p={40,100,300,1200}
+	return p[l]*(level+1)
 end
 __gfx__
 0000000055555555555555555555555555555555555555555555555555555555d56dd56d66666666000000000000000000000000000000000000000000000000
