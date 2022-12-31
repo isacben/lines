@@ -3,19 +3,20 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=10
+	spd=28
 	vel=8
 	lwall=8
 	rwall=88
 	lines=0
 	score=0
 	level=0
+	can_drop=false
 	
 	--start.game.delete.over
 	state="start"
 	
 	piece_x=32 --center of 96
-	piece_y=0
+	piece_y=-8
 	
 	board={}
 	reset_board()
@@ -146,8 +147,15 @@ end
 -- move & collisions
 
 function down()
+	local speed=spd
+	--soft drop
+	if btn(3) and current_pce.y>=8 then
+		speed=spd-spd+1
+	else
+		speed=spd
+	end
 	
-	if t%spd == 0 then
+	if t%speed==0 then
 		current_pce.y+=vel
 		
 		if on_floor() then
@@ -216,6 +224,7 @@ function move()
 			s.x+=move
 		end
 	end
+		
 	
 	--rotate
 	if btnp(2) then
