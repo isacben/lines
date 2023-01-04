@@ -10,13 +10,14 @@ function _init()
 	lines=0
 	score=0
 	level=0
-	can_drop=false
+	is_pressed=false
+	can_drop=true
 	
 	--start.game.delete.over
 	state="start"
 	
-	piece_x=32 --center of 96
-	piece_y=-8
+	piece_x=40 --center of 96
+	piece_y=0
 	
 	board={}
 	reset_board()
@@ -66,7 +67,7 @@ function draw()
 	elseif state=="delete" then
 		animate_del_squares()
 	end
-	debug=state
+	debug=is_pressed
 end
 
 
@@ -149,7 +150,16 @@ end
 function down()
 	local speed=spd
 	--soft drop
-	if btn(3) and current_pce.y>=8 then
+	if btn(3) then
+		if not is_pressed then
+			is_pressed=true
+		end
+	else
+		is_pressed=false
+		can_drop=true
+	end
+	
+	if is_pressed and can_drop then
 		speed=spd-spd+1
 	else
 		speed=spd
@@ -257,6 +267,10 @@ function stop_pce()
 	for s in all(pce_squares) do
 		add(squares,s)
 		to_board(s.x,s.y)
+	end
+	
+	if is_pressed then
+		can_drop=false
 	end
 	
 	pce_squares={}
