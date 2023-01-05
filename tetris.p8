@@ -16,8 +16,8 @@ function _init()
 	--start.game.delete.over
 	state="start"
 	
-	piece_x=40 --center of 96
-	piece_y=8
+	piece_x=32 --center of 96
+	piece_y=0
 	
 	board={}
 	reset_board()
@@ -65,6 +65,12 @@ function draw()
 	--delete line
 	elseif state=="delete" then
 		animate_del_squares()
+	
+	elseif state=="gameover" then
+		cls(6)
+		stage()
+		paint_squares()
+		print("game over",20,20,0)
 	end
 end
 
@@ -476,7 +482,12 @@ function to_board(x,y)
 	
 	row=y/8
 	col=x/8
-	board[row][col]=1
+	
+	if row<1 then
+		state="gameover"
+	else
+		board[row][col]=1
+	end
 end
 
 
