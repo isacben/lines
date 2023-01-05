@@ -17,7 +17,7 @@ function _init()
 	state="start"
 	
 	piece_x=40 --center of 96
-	piece_y=0
+	piece_y=8
 	
 	board={}
 	reset_board()
@@ -25,7 +25,6 @@ function _init()
 	--piece stuff
 	p_names={"ablock","atee"}
 	pce_squares={}
-	buff_squares={}
 	del_squares={}
 	current_pce={}
 	next_pce=get_next()
@@ -35,7 +34,7 @@ function _init()
 	
 	init_current_pce()
 	
-	--debug="tetris"
+	debug=""
 end
 
 function _update()
@@ -62,12 +61,11 @@ function draw()
 		cls(6)
 		stage()
 		paint_squares()
-	
+		
 	--delete line
 	elseif state=="delete" then
 		animate_del_squares()
 	end
-	debug=is_pressed
 end
 
 
@@ -166,16 +164,15 @@ function down()
 	end
 	
 	if t%speed==0 then
-		current_pce.y+=vel
-		
+		--fix for spawning too low bug
 		if on_floor() then
 			stop_pce()
-			init_current_pce()
 			spawn()
-		end
-	
-		for square in all(pce_squares) do
-			square.y+=vel
+		else
+			current_pce.y+=vel
+			for square in all(pce_squares) do
+				square.y+=vel
+			end
 		end
 	end
 end
@@ -256,7 +253,6 @@ function on_floor()
 		
 		--collision with floor
 		if cp_sqr.y+8>=128 then
-			stop_pce()
 			return true
 		end
 	end
@@ -275,7 +271,6 @@ function stop_pce()
 	
 	pce_squares={}
 	check_lines()
-	
 end
 -->8
 -- pieces
@@ -295,6 +290,8 @@ function get_next()
 end
 
 function spawn()
+	init_current_pce()
+	
 	current_pce.type=next_pce
 	generate(
 		pce_type[current_pce.type],
@@ -305,10 +302,11 @@ end
 
 
 function generate(arr,_spr)
+	pce_squares={}
 	acurr=arr
 	
-	for row=1,#arr do
-		for col=1,#arr[1] do
+	for row=1,#acurr do
+		for col=1,#acurr[1] do
 			if arr[row][col]==1 then
 				local s={}
 				s.x=current_pce.x+(col-1)*8
@@ -323,7 +321,7 @@ end
 
 function rotate(arr)
 	local temp={}
-	buff_squares={}
+	local buff_squares={}
 	
 	--rotate into temp
 	local n=#arr+1
@@ -362,8 +360,7 @@ function rotate(arr)
 	
 	--re paint the piece
 	pce_squares={}
-	acurr=temp
-	generate(acurr,current_pce.type)
+	generate(temp,current_pce.type)
 end
 
 
@@ -397,8 +394,8 @@ function update()
 	--start screen
 	if state=="start" then
 		if btnp(5) then
-			spawn()
 			state="game"
+			spawn()
 		end
 	
 	--game screen
@@ -411,16 +408,6 @@ end
 --arrays
 
 acurr={}
-
-pce_type={
-	ablock,
-	atee,
-	aell,
-	aelr,
-	asl,
-	asr,
-	aline,
-}
 
 ablock={
 	{1,1},
@@ -495,18 +482,7 @@ end
 
 function update_board()
 	reset_board()
-	
-	--debug board matrix
-	debug=""
-	for j=13,15 do
-		for i=1,10 do
-			debug=debug..","..board[j][i]
-		end
-		debug=debug.."\n"
-	end
-	
 	for s in all(squares) do
-		debug=(s.y/8)..","..(s.x/8)
 		board[s.y/8][s.x/8]=1
 	end
 end
@@ -551,6 +527,7 @@ function check_lines()
 		score+=calc_points(l)
 		lines+=l
 		level=flr(lines/5)
+		
 	end
 end
 
