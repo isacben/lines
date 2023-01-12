@@ -2,7 +2,11 @@
 
 **Lines** is my implementation of a very famouse [puzzle video game](https://en.wikipedia.org/wiki/Tetris).
 
-You can play it here!
+You can [play it here!](https://www.lexaloffle.com/bbs/?uid=73791#m)
+
+![Lines cartidge](lines.p8.png?raw=true "Lines cartidge")
+
+### Screenshot
 
 ![Lines game screenshot](lines.png?raw=true "Lines")
 
