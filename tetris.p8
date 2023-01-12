@@ -3,7 +3,7 @@ version 39
 __lua__
 function _init()
 	t=0
-	spd=28
+	spd=30
 	vel=8
 	lwall=8
 	rwall=88
@@ -118,7 +118,7 @@ function start_scr()
 		cprint("press x to start",98,5)	
 	end
 	
-	cprint("2023 isaac benitez",110,5)
+	cprint("(2023) isaac benitez",113,5)
 end
 
 function fog()
@@ -166,7 +166,14 @@ function stage()
 	rectfill(99,4,123,14,7)
 	rect(100,5,122,13,5)	
 	print("score",102,7,5)
-	print(tostr(score),112-(#tostr(score)*2),20,5)
+	
+	local sc=""
+	if score==0 then
+		sc=tostr(score)
+	else
+		sc=tostr(score.."0")
+	end
+	print(sc,112-(#sc*2),20,5)
 
 		
 	rectfill(99,41,123,58,7)
@@ -219,7 +226,7 @@ function gameover()
 	print("please",30,60,5)
 	print("try",36,70,5)
 	print("again",42,80,5)
-	spr(10,62,80)
+	spr(10,63,80)
 	
 	if t%24<14 then
 		print("press x to continue",49-(19*2),105,5)
@@ -625,17 +632,17 @@ function check_lines()
 		
 		for s in all(squares) do
 			if s.y<remove[1]*8 then
-				--board[s.y/8][s.x/8]=0
 				s.y+=8*#remove
-				--board[s.y/8][s.x/8]=1
 			end
 		end
 	
 		update_board()
 		score+=calc_points(l)
 		lines+=l
-		level=flr(lines/5)
 		
+		level=flr(lines/10)
+		local l_speed={30,26,22,18,14,10,9,8,7,6,5,2,1}
+		spd=l_speed[level+1]
 	end
 end
 
@@ -651,13 +658,15 @@ end
 
 
 function calc_points(l)
-	local p={40,100,300,1200}
+	local p={4,10,30,120}
 	return p[l]*(level+1)
 end
 -->8
+--reset
+
 function reset_game()
 	t=0
-	spd=28
+	spd=30
 	lines=0
 	score=0
 	level=0
