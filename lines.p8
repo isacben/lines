@@ -334,7 +334,9 @@ function move()
 		
 	
 	--rotate
-	if btnp(2) then
+	if btnp(2) or
+		btnp(4) or
+		btnp(5) then
 		rotate(acurr)
 	end
 end
