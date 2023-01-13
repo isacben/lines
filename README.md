@@ -1,6 +1,6 @@
 # LINES
 
-**Lines** is my implementation of a very famouse puzzle video game.
+**Lines** is my implementation of a very famous puzzle video game.
 
 You can [play it here!](https://www.lexaloffle.com/bbs/?uid=73791#m)
 
