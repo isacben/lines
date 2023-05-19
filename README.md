@@ -1,6 +1,6 @@
 # LINES
 
-**Lines** is my implementation of a very famous puzzle video game.
+**Lines** is my implementation of a very famous video game.
 
 You can [play it here!](https://www.lexaloffle.com/bbs/?uid=73791#m)
 
@@ -12,7 +12,7 @@ You can [play it here!](https://www.lexaloffle.com/bbs/?uid=73791#m)
 
 ### Disclaimer
 
-This video game is not tetris. This video game is inspired by tetris, and it was developed with the sole purpose of learn. This is an open source vide game and cannot be commercialized.
+This video game is not tetris. This video game is inspired by tetris, and it was developed with the sole purpose of learning. This is an open source video game and cannot be commercialized.
 
 ### Developer
 
